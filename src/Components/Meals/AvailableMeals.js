@@ -1,39 +1,41 @@
+import { useEffect,useState } from 'react';
+
 import MealItem from './MealItem/MealItem';
 import Card from '../UI/Card';
 
 import styles from './AvailableMeals.module.css';
 
 
-const DUMMY_MEALS = [
-  {
-    id: 'm1',
-    name: 'Sushi',
-    description: 'Finest fish and veggies',
-    price: 22.99,
-  },
-  {
-    id: 'm2',
-    name: 'Schnitzel',
-    description: 'A german specialty!',
-    price: 16.5,
-  },
-  {
-    id: 'm3',
-    name: 'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 12.99,
-  },
-  {
-    id: 'm4',
-    name: 'Green Bowl',
-    description: 'Healthy...and green...',
-    price: 18.99,
-  },
-];
-
 
 function AvailableMeals() {
-  const mealsList = DUMMY_MEALS.map((meal) => (
+
+const [meals,setMeals] = useState([]);
+
+const url = 'https://food-app-5b53c-default-rtdb.europe-west1.firebasedatabase.app/meals.json';
+
+const fetchMeals = async() => {
+  const response = await fetch(url);
+  const jsonData = await response.json();
+  console.log(jsonData)
+  const loadedMeals = [];
+  for(const key in jsonData){
+    loadedMeals.push({
+      id:key,
+      name:jsonData[key].name, //jsonData[key]<--- võtab siis data kaustast key ja siis sealt .name-ga saad nime
+      description:jsonData[key].description,
+      price:jsonData[key].price,
+      key:key
+    })
+  };
+  setMeals(loadedMeals);
+};
+
+
+useEffect(()=> {
+   fetchMeals()
+},[])
+
+  const mealsList = meals.map((meal) => (
     <MealItem
       id={meal.id}
       key={meal.id}
