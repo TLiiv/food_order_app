@@ -8,12 +8,13 @@ import styles from './AvailableMeals.module.css';
 
 
 function AvailableMeals() {
-
 const [meals,setMeals] = useState([]);
+const [isLoading,setIsLoading] = useState(true)
 
 const url = 'https://food-app-5b53c-default-rtdb.europe-west1.firebasedatabase.app/meals.json';
 
 const fetchMeals = async() => {
+  
   const response = await fetch(url);
   const jsonData = await response.json();
   console.log(jsonData)
@@ -28,6 +29,7 @@ const fetchMeals = async() => {
     })
   };
   setMeals(loadedMeals);
+  setIsLoading(false);
 };
 
 
@@ -35,6 +37,9 @@ useEffect(()=> {
    fetchMeals()
 },[])
 
+if(isLoading){
+  return <section className={styles.MealsLoading}><p>loading...</p></section>
+}
   const mealsList = meals.map((meal) => (
     <MealItem
       id={meal.id}
